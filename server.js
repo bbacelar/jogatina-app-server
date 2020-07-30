@@ -17,7 +17,7 @@ fastify.register(require('fastify-cors'), {
   methods: ['GET', 'PUT', 'POST', 'DELETE'],
   credentials: true
 })
-fastify.register(require('./plugins/fastify-auth0'), {
+fastify.register(require('fastify-auth0-verify'), {
   domain: process.env.DOMAIN,
   audience: process.env.AUDIENCE,
 });
