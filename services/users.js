@@ -40,10 +40,43 @@ async function routes(fastify, options) {
           picture: req.body.picture,
         }
       );
-      
+
       reply.code(200).send('User inserted/updated');
     } catch (error) {
       reply.code(500).send('Error ' + error);
+    }
+  });
+
+  fastify.get('/users/stats', async (req, reply) => {
+    try {
+      const futurePlays = await fastify
+        .knex('usersplays')
+        .join('plays', 'usersplays.playid', 'plays.id')
+        .where('usersplays.userid', req.user.sub)
+        .andWhere(fastify.knex.raw('plays.play_date >= CURRENT_DATE'))
+        .select(
+          'plays.id',
+          'plays.bg_name',
+          'plays.bg_image_url',
+          'plays.play_location',
+          'plays.play_date'
+        )
+        .orderBy('plays.play_date');
+      const groups = await fastify
+        .knex('usersgroups')
+        .join('groups', 'usersgroups.groupid', 'groups.id')
+        .where('usersgroups.userid', req.user.sub)
+        .select('groups.name');
+
+      const nextPlay = futurePlays[0] || {};
+      const playsCount = futurePlays.length;      
+      reply.code(200).send({
+        nextPlay,
+        playsCount,
+        groups
+      });
+    } catch (error) {
+      reply.code(500).send(error);
     }
   });
 }
