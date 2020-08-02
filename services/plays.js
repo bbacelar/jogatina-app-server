@@ -59,7 +59,8 @@ async function routes(fastify, options) {
           'user_owner_id',
           'play_location',
           'play_date'
-        );
+        )
+        .first();
 
       return data;
     } catch (error) {

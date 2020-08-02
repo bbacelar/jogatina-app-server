@@ -42,8 +42,9 @@ async function routes(fastify, options) {
     try {
       const data = fastify
         .knex('groups')
+        .where('id', req.params.groupId)
         .select('id', 'name', 'uf', 'city', 'user_owner_id')
-        .where('id', req.params.groupId);
+        .first();
 
       return data;
     } catch (error) {

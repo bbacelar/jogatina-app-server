@@ -66,7 +66,7 @@ async function routes(fastify, options) {
         .knex('usersgroups')
         .join('groups', 'usersgroups.groupid', 'groups.id')
         .where('usersgroups.userid', req.user.sub)
-        .select('groups.name');
+        .select('groups.*');
 
       const nextPlay = futurePlays[0] || {};
       const playsCount = futurePlays.length;      
